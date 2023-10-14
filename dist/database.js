@@ -11,7 +11,8 @@ exports.sequelize = new sequelize_1.Sequelize({
     username: config_1.default.POSTGRES_HOST_USER,
     host: config_1.default.POSTGRES_HOST,
     database: config_1.default.DB_NAME,
-    password: config_1.default.POSTGRES_HOST_PWD
+    password: config_1.default.POSTGRES_HOST_PWD,
+    port: parseInt(config_1.default.DB_PORT, 10)
 });
 function startPostgresConnection() {
     console.log('Trying to connect Database... Wait please');

@@ -30,6 +30,7 @@ const config = {
     POSTGRES_HOST_USER: process.env.POSTGRES_HOST_USER || '',
     POSTGRES_HOST_PWD: process.env.POSTGRES_HOST_PWD || '',
     DB_NAME: process.env.DB_NAME || '',
+    DB_PORT: process.env.DB_PORT || '',
     PORT: process.env.PORT || ''
 };
 exports.default = config;
