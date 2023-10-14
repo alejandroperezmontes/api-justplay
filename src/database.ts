@@ -6,7 +6,8 @@ export const sequelize = new Sequelize({
   username: config.POSTGRES_HOST_USER,
   host: config.POSTGRES_HOST,
   database: config.DB_NAME,
-  password: config.POSTGRES_HOST_PWD
+  password: config.POSTGRES_HOST_PWD,
+  port: parseInt(config.DB_PORT, 10)
 });
 
 export function startPostgresConnection() {
