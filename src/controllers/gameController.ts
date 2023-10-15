@@ -17,6 +17,8 @@ export const createGame = async (req: Request, res: Response) => {
       result
     } = req.body;
 
+    console.log(req.body);
+
     const gameData = {
       name,
       home_team,
@@ -52,7 +54,8 @@ export const updateGameBeforePlay = async (req: Request, res: Response) => {
       away_team,
       game_date,
       ubication,
-      game_hour
+      game_hour,
+      result
     } = req.body;
 
     const gameById = await Game.findByPk(gameId);
@@ -61,19 +64,29 @@ export const updateGameBeforePlay = async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'El juego que intenta actualizar no se ha encontrado.', status: 404 });
     }
 
-    if (gameById.result) return res.status(400).json({ message: 'No puede actualizar un juego que ya tiene resultado.', status: 400 });
-
-    const [affectedCount, gameUpdated] = await Game.update({
+    const gameData = {
       name,
       home_team,
       away_team,
       game_date,
+      ubication,
       game_hour,
-      ubication
-    }, { where: { id: gameById.id }, returning: true });
+      result,
+      score_home: null as number | null,
+      score_away: null as number | null
+    };
+
+    if (result && result !== '') {
+      const { scoreHome, scoreAway } = splitResult(result);
+      gameData.score_home = scoreHome;
+      gameData.score_away = scoreAway;
+    }
+
+    const [affectedCount, gameUpdated] = await Game
+      .update(gameData, { where: { id: gameById.id }, returning: true });
 
     if (affectedCount === 1) {
-      return res.status(200).json({ data: gameUpdated[0], status: 200 });
+      return res.status(200).json({ data: gameUpdated[0], status: 200, message: 'El juego ha sido actualizado correctamente.' });
     }
     return res.status(400).json({ message: 'Error al actualizar el juego. ', status: 400 });
   } catch (error) {
@@ -111,7 +124,7 @@ export const updateGameAfterPlay = async (req: Request, res: Response) => {
       .update(gameData, { where: { id: gameById.id }, returning: true });
 
     if (affectedCount === 1) {
-      return res.status(200).json({ data: gameUpdated[0], status: 200 });
+      return res.status(200).json({ data: gameUpdated[0], status: 200, message: 'El juego ha sido actualizado correctamente.' });
     }
     return res.status(400).json({ message: 'Error al actualizar el juego. ', status: 400 });
   } catch (error) {

@@ -21,6 +21,7 @@ const functions_1 = __importDefault(require("../middleware/general/functions"));
 const createGame = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { name, home_team, away_team, game_date, ubication, game_hour, result } = req.body;
+        console.log(req.body);
         const gameData = {
             name,
             home_team,
@@ -48,23 +49,31 @@ exports.createGame = createGame;
 const updateGameBeforePlay = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { gameId } = req.params;
-        const { name, home_team, away_team, game_date, ubication, game_hour } = req.body;
+        const { name, home_team, away_team, game_date, ubication, game_hour, result } = req.body;
         const gameById = yield Game_1.default.findByPk(gameId);
         if (!gameById) {
             return res.status(404).json({ message: 'El juego que intenta actualizar no se ha encontrado.', status: 404 });
         }
-        if (gameById.result)
-            return res.status(400).json({ message: 'No puede actualizar un juego que ya tiene resultado.', status: 400 });
-        const [affectedCount, gameUpdated] = yield Game_1.default.update({
+        const gameData = {
             name,
             home_team,
             away_team,
             game_date,
+            ubication,
             game_hour,
-            ubication
-        }, { where: { id: gameById.id }, returning: true });
+            result,
+            score_home: null,
+            score_away: null
+        };
+        if (result && result !== '') {
+            const { scoreHome, scoreAway } = (0, functions_1.default)(result);
+            gameData.score_home = scoreHome;
+            gameData.score_away = scoreAway;
+        }
+        const [affectedCount, gameUpdated] = yield Game_1.default
+            .update(gameData, { where: { id: gameById.id }, returning: true });
         if (affectedCount === 1) {
-            return res.status(200).json({ data: gameUpdated[0], status: 200 });
+            return res.status(200).json({ data: gameUpdated[0], status: 200, message: 'El juego ha sido actualizado correctamente.' });
         }
         return res.status(400).json({ message: 'Error al actualizar el juego. ', status: 400 });
     }
@@ -93,7 +102,7 @@ const updateGameAfterPlay = (req, res) => __awaiter(void 0, void 0, void 0, func
         const [affectedCount, gameUpdated] = yield Game_1.default
             .update(gameData, { where: { id: gameById.id }, returning: true });
         if (affectedCount === 1) {
-            return res.status(200).json({ data: gameUpdated[0], status: 200 });
+            return res.status(200).json({ data: gameUpdated[0], status: 200, message: 'El juego ha sido actualizado correctamente.' });
         }
         return res.status(400).json({ message: 'Error al actualizar el juego. ', status: 400 });
     }
