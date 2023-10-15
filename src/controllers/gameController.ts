@@ -103,6 +103,10 @@ export const updateGameAfterPlay = async (req: Request, res: Response) => {
       result
     } = req.body;
 
+    if (!result || result === '') {
+      return res.status(400).json({ message: 'Todos los campos son obligatorios.' });
+    }
+
     const gameById = await Game.findByPk(gameId);
 
     if (!gameById) {

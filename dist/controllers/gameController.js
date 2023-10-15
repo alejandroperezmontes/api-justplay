@@ -86,6 +86,9 @@ const updateGameAfterPlay = (req, res) => __awaiter(void 0, void 0, void 0, func
     try {
         const { gameId } = req.params;
         const { name, result } = req.body;
+        if (!result || result === '') {
+            return res.status(400).json({ message: 'Todos los campos son obligatorios.' });
+        }
         const gameById = yield Game_1.default.findByPk(gameId);
         if (!gameById) {
             return res.status(404).json({ message: 'El juego que intenta actualizar no se ha encontrado.', status: 404 });
