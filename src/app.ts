@@ -29,7 +29,7 @@ startPostgresConnection()
 app.use(express.json());
 
 app.get('/status', async (req, res) => {
-  res.status(200).json({ message: 'El server esta OK' });
+  res.status(200).json({ message: 'El server esta OK con version 1.1' });
 });
 
 app.use('/game', gameRoutes);
