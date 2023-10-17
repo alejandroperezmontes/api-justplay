@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteGame = exports.getAllGames = exports.updateGameAfterPlay = exports.updateGameBeforePlay = exports.createGame = void 0;
+exports.uploadGameImage = exports.deleteGame = exports.getAllGames = exports.updateGameAfterPlay = exports.updateGameBeforePlay = exports.createGame = void 0;
 const sequelize_1 = require("sequelize");
 // Models
 const Game_1 = __importDefault(require("../models/Game"));
@@ -21,7 +21,6 @@ const functions_1 = __importDefault(require("../middleware/general/functions"));
 const createGame = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { name, home_team, away_team, game_date, ubication, game_hour, result } = req.body;
-        console.log(req.body);
         const gameData = {
             name,
             home_team,
@@ -148,3 +147,22 @@ const deleteGame = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.deleteGame = deleteGame;
+const uploadGameImage = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { gameId } = req.params;
+        if (req.file) {
+            const gameImage = req.file;
+            const [affectedCount, gameUpdated] = yield Game_1.default
+                .update({ image: gameImage.location }, { where: { id: gameId }, returning: true });
+            if (affectedCount === 1) {
+                return res.status(200).json({ data: gameUpdated[0], status: 200, message: 'Imagen cargadada exitosamente.' });
+            }
+            return res.status(400).json({ message: 'Imagen cargada pero no se ha asignado al juego. ', status: 400 });
+        }
+        return res.status(400).json({ message: 'No se ha podido cargar la imagen', status: 400 });
+    }
+    catch (error) {
+        return res.status(500).json({ message: 'Error al cargar la imagen del juego. ', status: 500 });
+    }
+});
+exports.uploadGameImage = uploadGameImage;

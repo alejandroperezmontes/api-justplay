@@ -17,8 +17,6 @@ export const createGame = async (req: Request, res: Response) => {
       result
     } = req.body;
 
-    console.log(req.body);
-
     const gameData = {
       name,
       home_team,
@@ -173,5 +171,28 @@ export const deleteGame = async (req: Request, res: Response) => {
     return res.status(200).json({ message: 'El juego ha sido eliminado correctamente.', status: 200 });
   } catch (error) {
     return res.status(500).json({ message: 'Error al eliminar el juego. ', status: 500 });
+  }
+};
+
+export const uploadGameImage = async (req: Request, res: Response) => {
+  try {
+    const { gameId } = req.params;
+
+    if (req.file) {
+      const gameImage = req.file as unknown as { location: string };
+
+      const [affectedCount, gameUpdated] = await Game
+        .update({ image: gameImage.location }, { where: { id: gameId }, returning: true });
+
+      if (affectedCount === 1) {
+        return res.status(200).json({ data: gameUpdated[0], status: 200, message: 'Imagen cargadada exitosamente.' });
+      }
+
+      return res.status(400).json({ message: 'Imagen cargada pero no se ha asignado al juego. ', status: 400 });
+    }
+
+    return res.status(400).json({ message: 'No se ha podido cargar la imagen', status: 400 });
+  } catch (error) {
+    return res.status(500).json({ message: 'Error al cargar la imagen del juego. ', status: 500 });
   }
 };

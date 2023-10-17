@@ -27,12 +27,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
+const uploadFile_1 = __importDefault(require("../middleware/aws/uploadFile"));
 const GameController = __importStar(require("../controllers/gameController"));
 const gameValidation_1 = require("../middleware/validations/gameValidation");
 const validator_1 = __importDefault(require("../middleware/validations/validator"));
 const router = (0, express_1.Router)();
 router.get('/all', GameController.getAllGames);
 router.post('/create', gameValidation_1.createGameValidation, validator_1.default, GameController.createGame);
+router.post('/upload-image/:gameId', uploadFile_1.default.single('image'), GameController.uploadGameImage);
 router.put('/update/before-play/:gameId', gameValidation_1.updateGameBeforePlayValidation, validator_1.default, GameController.updateGameBeforePlay);
 router.put('/update/after-play/:gameId', gameValidation_1.updateGameAfterPlayValidation, validator_1.default, GameController.updateGameAfterPlay);
 router.delete('/delete/:gameId', GameController.deleteGame);

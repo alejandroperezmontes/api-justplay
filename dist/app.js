@@ -36,6 +36,6 @@ app.use((0, cors_1.default)(corsConfig));
 });
 app.use(express_1.default.json());
 app.get('/status', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    res.status(200).json({ message: 'El server esta OK con version 1.1' });
+    res.status(200).json({ message: 'El server esta OK con version 1.2' });
 }));
 app.use('/game', gameRoute_1.default);

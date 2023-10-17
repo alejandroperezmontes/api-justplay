@@ -21,6 +21,8 @@ class Game extends Model {
   public score_home?: number;
 
   public score_away?: number;
+
+  public image?: string;
 }
 
 Game.init(
@@ -62,6 +64,10 @@ Game.init(
     },
     score_away: {
       type: DataTypes.INTEGER
+    },
+    image: {
+      type: DataTypes.STRING(255),
+      allowNull: false
     }
   },
   {

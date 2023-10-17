@@ -42,6 +42,10 @@ Game.init({
     },
     score_away: {
         type: sequelize_1.DataTypes.INTEGER
+    },
+    image: {
+        type: sequelize_1.DataTypes.STRING(255),
+        allowNull: false
     }
 }, {
     sequelize: database_1.sequelize,
