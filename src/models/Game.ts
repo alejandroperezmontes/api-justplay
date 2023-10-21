@@ -66,8 +66,7 @@ Game.init(
       type: DataTypes.INTEGER
     },
     image: {
-      type: DataTypes.STRING(255),
-      allowNull: false
+      type: DataTypes.STRING(255)
     }
   },
   {
